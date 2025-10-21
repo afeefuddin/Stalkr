@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import {
   View,
   TextInput,
@@ -10,6 +10,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
 import api from '~/lib/api';
+import usePersistedQuery from '~/lib/react-query/use-persisted-query';
+import { queryClient } from '~/lib/react-query/queryClient';
 
 export default function SearchScreen() {
   const navigation: any = useNavigation();
@@ -17,34 +19,33 @@ export default function SearchScreen() {
   const initialQuery = route.params?.q ?? '';
 
   const [query, setQuery] = useState(initialQuery);
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<any[]>([]);
   const inputRef = useRef<TextInput | null>(null);
+  // Check if cached data exists first
+  const cachedResults = queryClient.getQueryData(['symbol', query]);
 
-  const performSearch = useCallback(async (q: string) => {
-    const trimmed = (q ?? '').trim();
-    if (!trimmed) {
-      setResults([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const { data, error } = await api('SYMBOL_SEARCH', { keywords: trimmed });
-      let matches: any[] = [];
-      if (data) {
-        if (Array.isArray((data as any).bestMatches)) {
-          matches = (data as any).bestMatches;
-        } else if (Array.isArray(data)) {
-          matches = data as any[];
-        }
+  const {
+    data: results = cachedResults || [],
+    isFetching: loading,
+    refetch,
+  } = usePersistedQuery({
+    queryKey: ['symbol', query],
+    queryFn: async () => {
+      // Only fetch if no cached data exists
+      if (cachedResults) return cachedResults;
+
+      const trimmed = query.trim();
+      if (!trimmed) return [];
+      const { data } = await api('SYMBOL_SEARCH', { keywords: trimmed });
+
+      if (Array.isArray((data as any)?.bestMatches)) {
+        return (data as any).bestMatches;
+      } else if (Array.isArray(data)) {
+        return data;
       }
-      setResults(matches);
-    } catch (err) {
-      setResults([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return [];
+    },
+    enabled: !!query.trim(),
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -56,7 +57,12 @@ export default function SearchScreen() {
           placeholder="Search symbol or company"
           placeholderTextColor={Colors.muted as any}
           returnKeyType="search"
-          onSubmitEditing={() => performSearch(query)}
+          // Prevent refetch if cached data exists
+          onSubmitEditing={() => {
+            if (!cachedResults) {
+              refetch();
+            }
+          }}
           style={{
             backgroundColor: 'rgba(255,255,255,0.03)',
             color: '#fff',
@@ -69,11 +75,11 @@ export default function SearchScreen() {
       ),
       headerStyle: { backgroundColor: Colors.backgroundDark },
     });
-  }, [navigation, query, performSearch]);
+  }, [navigation, query, refetch, cachedResults]);
 
   const renderItem = ({ item }: { item: any }) => {
-    const symbol = item['1. symbol'] ?? item.symbol ?? item['symbol'];
-    const name = item['2. name'] ?? item.name ?? item['name'];
+    const symbol = item['1. symbol'] ?? item.symbol;
+    const name = item['2. name'] ?? item.name;
     return (
       <Pressable
         onPress={() => {
@@ -98,7 +104,7 @@ export default function SearchScreen() {
     <View
       style={{ flex: 1, backgroundColor: Colors.backgroundDark, padding: 12 }}
     >
-      {loading && results.length === 0 ? (
+      {loading && (!results || results.length === 0) ? (
         <ActivityIndicator color={Colors.primary} />
       ) : (
         <FlatList

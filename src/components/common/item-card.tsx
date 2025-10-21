@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { SmallAvatar } from './ui/avatar';
+import { SmallAvatar } from '../ui/avatar';
 import { Pressable, View } from 'react-native';
-import Skeleton from './ui/skeleton';
+import Skeleton from '../ui/skeleton';
 import z from 'zod';
 import { gain_loser_Schema } from '~/lib/schema';
 import Text from '~/components/ui/text';

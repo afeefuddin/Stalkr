@@ -7,11 +7,12 @@ import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
 import { getWatchlists } from '~/lib/storage';
 import { SkeletonCard } from '~/components/ui/skeleton';
+import useDbQuery from '~/lib/react-query/use-db-query';
 
 export default function WatchListTab() {
   const navigation = useNavigation<any>();
 
-  const watchlistsQuery = useQuery({
+  const watchlistsQuery = useDbQuery({
     queryKey: ['watchlists'],
     queryFn: getWatchlists,
   });

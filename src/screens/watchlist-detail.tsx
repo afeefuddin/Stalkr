@@ -1,31 +1,31 @@
 import React from 'react';
 import { View, Pressable, ScrollView, Alert } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import Feather from '@react-native-vector-icons/feather';
 import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
 import { getWatchlists, removeTicker, deleteWatchlist } from '~/lib/storage';
 import { SkeletonCard } from '~/components/ui/skeleton';
 import Avatar from '~/components/ui/avatar';
-
-type RouteParams = {
-  watchlistName: string;
-};
+import useDbQuery from '~/lib/react-query/use-db-query';
 
 export default function WatchlistDetailScreen() {
-  const route = useRoute();
-  const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
-  const { watchlistName } = (route.params ?? {}) as RouteParams;
+  const route =
+    useRoute<RouteProp<{ params: { watchlistName: string } }, 'params'>>();
+  const navigation = useNavigation<any>();
+  const { watchlistName } = route.params;
 
-  const watchlistQuery = useQuery({
+  const watchlistQuery = useDbQuery({
     queryKey: ['watchlist-detail', watchlistName],
     queryFn: async () => {
       const watchlists = await getWatchlists();
       return watchlists.find(w => w.name === watchlistName);
     },
   });
+
+  console.log(watchlistQuery.isRefetching);
 
   const removeTickerMutation = useMutation({
     mutationFn: ({ ticker }: { ticker: string }) =>

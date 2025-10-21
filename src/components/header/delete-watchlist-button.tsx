@@ -5,8 +5,8 @@ import { Alert, Pressable } from 'react-native';
 import { deleteWatchlist } from '~/lib/storage';
 
 export default function DeleteWatchlistButton({ name }: { name: string }) {
-  const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
+  const navigation = useNavigation<any>();
   const deleteWatchlistMutation = useMutation({
     mutationFn: () => deleteWatchlist(name),
     onSuccess: () => {

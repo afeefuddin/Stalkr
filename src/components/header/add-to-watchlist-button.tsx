@@ -5,18 +5,18 @@ import { useQuery } from '@tanstack/react-query';
 import { isInWatchlist } from '~/lib/storage';
 import Colors from '~/theme/colors';
 import Text from '../ui/text';
+import useDbQuery from '~/lib/react-query/use-db-query';
 
 export default function AddToWatchlistButton({ ticker }: { ticker: string }) {
   const [showWatchlistSheet, setShowWatchlistSheet] = useState(false);
 
-  const isInWatchlistQuery = useQuery({
+  const isInWatchlistQuery = useDbQuery({
     queryKey: ['is-in-watchlist', ticker],
     queryFn: () => isInWatchlist(ticker),
   });
 
   return (
     <>
-      {/* Watchlist Button */}
       <Pressable
         onPress={() => setShowWatchlistSheet(true)}
         style={{

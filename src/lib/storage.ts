@@ -125,29 +125,3 @@ export async function getWatchlistsWithTicker(
 
   return results;
 }
-
-export async function getCache(key: string) {
-  const data = await AsyncStorage.getItem(`cache:${key}`);
-  if (!data) {
-    return null;
-  }
-  try {
-    const parsedData = JSON.parse(data);
-    if (parsedData.eat > Date.now()) {
-      return parsedData.data;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-}
-
-export async function setCache(key: string, data: Record<string, unknown>) {
-  const dataWithTTL = {
-    eat: Date.now() + 1000 * 60 * 60, // expire in 1 hour
-    data,
-  };
-
-  await AsyncStorage.setItem(`cache:${key}`, JSON.stringify(dataWithTTL));
-}

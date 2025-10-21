@@ -2,10 +2,10 @@ import Feather from '@react-native-vector-icons/feather';
 import { FlatList, View } from 'react-native';
 import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
-import { useRoute } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import api from '~/lib/api';
-import { ItemCard } from '~/components/item-card';
+import { ItemCard } from '~/components/common/item-card';
+import usePersistedQuery from '~/lib/react-query/use-persisted-query';
 
 const displayMap = {
   top_gainers: 'Top Gainers',
@@ -18,17 +18,17 @@ type RouteParams = {
 };
 
 export default function ViewAll() {
-  const route = useRoute();
-  const params = (route.params ?? {}) as RouteParams;
-  const { path } = params;
+  const route =
+    useRoute<
+      RouteProp<{ params: { path: keyof typeof displayMap } }, 'params'>
+    >();
+  const { path } = route.params;
 
-
-  const { data } = useQuery({
+  const { data } = usePersistedQuery({
     queryKey: ['gainers-losers'],
     queryFn: async () => {
-      const { data, error } = await api('TOP_GAINERS_LOSERS');
+      const { data } = await api('TOP_GAINERS_LOSERS');
 
-      console.log(error);
       return data ?? null;
     },
   });

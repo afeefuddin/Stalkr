@@ -9,37 +9,34 @@ interface AvatarProps {
   textColor?: string;
 }
 
-// Beautiful gradient color combinations
 const AVATAR_COLORS = [
-  ['#FF6B6B', '#FF8E53'], // Red to Orange
-  ['#4ECDC4', '#44A08D'], // Teal to Green
-  ['#45B7D1', '#96C93F'], // Blue to Green
-  ['#F093FB', '#F5576C'], // Pink to Red
-  ['#4FACFE', '#00F2FE'], // Blue to Cyan
-  ['#43E97B', '#38F9D7'], // Green to Mint
-  ['#FA709A', '#FEE140'], // Pink to Yellow
-  ['#A8EDEA', '#FED6E3'], // Mint to Pink
-  ['#FFD89B', '#19547B'], // Yellow to Blue
-  ['#667eea', '#764ba2'], // Purple to Purple
-  ['#f093fb', '#f5576c'], // Magenta to Red
-  ['#4facfe', '#00f2fe'], // Light Blue to Cyan
-  ['#ffecd2', '#fcb69f'], // Cream to Peach
-  ['#a8edea', '#fed6e3'], // Aqua to Pink
-  ['#ffd0a6', '#fd9853'], // Peach to Orange
+  ['#FF6B6B', '#FF8E53'],
+  ['#4ECDC4', '#44A08D'],
+  ['#45B7D1', '#96C93F'],
+  ['#F093FB', '#F5576C'],
+  ['#4FACFE', '#00F2FE'],
+  ['#43E97B', '#38F9D7'],
+  ['#FA709A', '#FEE140'],
+  ['#A8EDEA', '#FED6E3'],
+  ['#FFD89B', '#19547B'],
+  ['#667eea', '#764ba2'],
+  ['#f093fb', '#f5576c'],
+  ['#4facfe', '#00f2fe'],
+  ['#ffecd2', '#fcb69f'],
+  ['#a8edea', '#fed6e3'],
+  ['#ffd0a6', '#fd9853'],
 ];
 
-// Generate a consistent color index based on the name
 const getColorIndex = (name: string): number => {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     const char = name.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
   }
   return Math.abs(hash) % AVATAR_COLORS.length;
 };
 
-// Get the first letter of the name
 const getInitial = (name: string): string => {
   return name.charAt(0).toUpperCase();
 };
@@ -53,7 +50,7 @@ const Avatar: React.FC<AvatarProps> = ({
   const colorIndex = getColorIndex(name);
   const [primaryColor, secondaryColor] = AVATAR_COLORS[colorIndex];
   const initial = getInitial(name);
-  const fontSize = size * 0.4; // Font size is 40% of avatar size
+  const fontSize = size * 0.4;
 
   return (
     <View
@@ -62,13 +59,12 @@ const Avatar: React.FC<AvatarProps> = ({
         {
           width: size,
           height: size,
-          borderRadius: size / 2, // Perfect circle
+          borderRadius: size / 2,
           backgroundColor: primaryColor,
         },
         style,
       ]}
     >
-      {/* Gradient overlay effect */}
       <View
         style={[
           styles.gradientOverlay,
@@ -80,8 +76,7 @@ const Avatar: React.FC<AvatarProps> = ({
           },
         ]}
       />
-      
-      {/* Initial text */}
+
       <Text
         style={[
           styles.initial,
@@ -126,19 +121,18 @@ const styles = StyleSheet.create({
 
 export default Avatar;
 
-// Additional preset sizes for common use cases
-export const SmallAvatar: React.FC<Omit<AvatarProps, 'size'> & { size?: number }> = (props) => (
-  <Avatar {...props} size={props.size || 24} />
-);
+export const SmallAvatar: React.FC<
+  Omit<AvatarProps, 'size'> & { size?: number }
+> = props => <Avatar {...props} size={props.size || 24} />;
 
-export const MediumAvatar: React.FC<Omit<AvatarProps, 'size'> & { size?: number }> = (props) => (
-  <Avatar {...props} size={props.size || 40} />
-);
+export const MediumAvatar: React.FC<
+  Omit<AvatarProps, 'size'> & { size?: number }
+> = props => <Avatar {...props} size={props.size || 40} />;
 
-export const LargeAvatar: React.FC<Omit<AvatarProps, 'size'> & { size?: number }> = (props) => (
-  <Avatar {...props} size={props.size || 64} />
-);
+export const LargeAvatar: React.FC<
+  Omit<AvatarProps, 'size'> & { size?: number }
+> = props => <Avatar {...props} size={props.size || 64} />;
 
-export const XLargeAvatar: React.FC<Omit<AvatarProps, 'size'> & { size?: number }> = (props) => (
-  <Avatar {...props} size={props.size || 96} />
-);
+export const XLargeAvatar: React.FC<
+  Omit<AvatarProps, 'size'> & { size?: number }
+> = props => <Avatar {...props} size={props.size || 96} />;

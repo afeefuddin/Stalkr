@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable, ScrollView } from 'react-native';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
 import {
@@ -10,6 +10,7 @@ import {
   removeTicker,
   getWatchlistsWithTicker,
 } from '~/lib/storage';
+import useDbQuery from '~/lib/react-query/use-db-query';
 
 type WatchlistSheetProps = {
   ticker: string;
@@ -20,23 +21,26 @@ export default function WatchlistSheet({
   ticker,
   onClose,
 }: WatchlistSheetProps) {
-  const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [newName, setNewName] = useState('');
+  const queryClient = useQueryClient();
 
   // Queries
-  const watchlistsQuery = useQuery({
+  const watchlistsQuery = useDbQuery({
     queryKey: ['watchlists'],
     queryFn: getWatchlists,
   });
 
-  const tickerWatchlistsQuery = useQuery({
+  const tickerWatchlistsQuery = useDbQuery({
     queryKey: ['ticker-watchlists', ticker],
     queryFn: async () => {
       const data = await getWatchlistsWithTicker(ticker);
+      console.log(data);
       setSelected(new Set(data));
       return data;
     },
+    gcTime: 0,
+    staleTime: 0,
   });
 
   // Mutations
@@ -64,6 +68,7 @@ export default function WatchlistSheet({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['watchlists'] });
       queryClient.invalidateQueries({ queryKey: ['ticker-watchlists'] });
+      queryClient.invalidateQueries({ queryKey: ['watchlist-detail'] });
       onClose();
     },
   });

@@ -4,7 +4,7 @@ import Text from '~/components/ui/text';
 import Colors from '~/theme/colors';
 import { z } from 'zod';
 import { gain_loser_Schema } from '~/lib/schema';
-import Skeleton from './ui/skeleton';
+import Skeleton from '../ui/skeleton';
 import { useNavigation } from '@react-navigation/native';
 import { ItemCard } from './item-card';
 

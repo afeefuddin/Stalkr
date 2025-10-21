@@ -18,32 +18,8 @@ export const apiResponseSchema = z.object({
     bestMatches: z.array(z.record(z.string(), z.string())),
   }),
   OVERVIEW: z.record(z.string(), z.string()),
-  TIME_SERIES_INTRADAY: z.object({
-    'Meta Data': z.record(z.string(), z.string()),
-    'Time Series (5min)': z.record(
-      z.string(),
-      z.record(z.string(), z.string()),
-    ),
-  }),
-  TIME_SERIES_DAILY: z.object({
-    'Meta Data': z.record(z.string(), z.string()),
-    'Time Series (Daily)': z.record(
-      z.string(),
-      z.record(z.string(), z.string()),
-    ),
-  }),
-  TIME_SERIES_WEEKLY: z.object({
-    'Meta Data': z.record(z.string(), z.string()),
-    'Time Series (Weekly)': z.record(
-      z.string(),
-      z.record(z.string(), z.string()),
-    ),
-  }),
-  TIME_SERIES_MONTHLY: z.object({
-    'Meta Data': z.record(z.string(), z.string()),
-    'Time Series (Monthly)': z.record(
-      z.string(),
-      z.record(z.string(), z.string()),
-    ),
-  }),
+  TIME_SERIES_INTRADAY: z.record(z.string(), z.unknown()),
+  TIME_SERIES_DAILY: z.record(z.string(), z.unknown()),
+  TIME_SERIES_WEEKLY: z.record(z.string(), z.unknown()),
+  TIME_SERIES_MONTHLY: z.record(z.string(), z.unknown()),
 });
