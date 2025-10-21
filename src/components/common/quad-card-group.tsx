@@ -56,6 +56,13 @@ export default function QuadCardGroup({
           onPress={() => {
             navigation.push('ViewAll', { path: route });
           }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={({ pressed }) => ({
+            padding: 8,
+            borderRadius: 8,
+            opacity: pressed ? 0.7 : 1,
+            backgroundColor: pressed ? 'rgba(211, 255, 84, 0.1)' : 'transparent',
+          })}
         >
           <Text variant="sm" style={{ color: Colors.primary }}>
             View all

@@ -41,6 +41,11 @@ function TabNavigator() {
           backgroundColor: Colors.secondaryBackgroundDark,
           borderTopWidth: 0,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.muted,
       })}
     >
       <Tab.Screen
@@ -64,7 +69,9 @@ function TabNavigator() {
 
 const MainNavigator = memo(() => (
   <NavigationContainer>
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+    >
       <Stack.Screen name="Tabs" component={TabNavigator} />
       <Stack.Screen
         name="StockInfo"

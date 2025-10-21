@@ -14,7 +14,7 @@ export const getTabIcon = (routeName: string, focused: boolean) => {
     <Feather
       name={iconsMap[routeName] ?? 'circle'}
       size={20}
-      color={focused ? '#6200ee' : 'transparent'}
+      color={focused ? Colors.primary : Colors.muted}
     />
   );
 };

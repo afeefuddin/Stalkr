@@ -46,9 +46,11 @@ export default function WatchlistSheet({
   // Mutations
   const createMutation = useMutation({
     mutationFn: createWatchlist,
-    onSuccess: () => {
+    onSuccess: (_, newWatchlistName) => {
       queryClient.invalidateQueries({ queryKey: ['watchlists'] });
       setNewName('');
+      // Auto-select the newly created watchlist
+      setSelected(prev => new Set([...prev, newWatchlistName]));
     },
   });
 
